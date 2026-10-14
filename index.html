@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111318">
+<title>Pocket AI</title>
+<style>
+:root{color-scheme:dark;--bg:#111318;--panel:#191c23;--panel2:#222631;--text:#f4f5f7;--muted:#a2a8b5;--line:#303541;--accent:#b9f4d2}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{min-height:100dvh}.app{display:flex;flex-direction:column;height:100dvh;max-width:920px;margin:0 auto}
+header{display:flex;align-items:center;gap:12px;padding:calc(12px + env(safe-area-inset-top)) 16px 12px;border-bottom:1px solid var(--line);background:rgba(17,19,24,.96)}
+.logo{width:36px;height:36px;border-radius:12px;background:var(--accent);color:#111318;display:grid;place-items:center;font-weight:900;font-size:18px}
+.brand{flex:1}.brand strong{display:block;font-size:16px}.brand small{color:var(--muted);font-size:12px}
+.header-btn,.icon-btn{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:12px;padding:10px 12px;font-size:13px}
+main{flex:1;overflow:auto;padding:22px 16px 18px;scroll-behavior:smooth}
+.welcome{max-width:600px;margin:8vh auto 0;text-align:center}.orb{width:66px;height:66px;border-radius:22px;background:linear-gradient(135deg,#b9f4d2,#9cc8ff);display:grid;place-items:center;color:#111318;font-size:30px;margin:0 auto 20px}
+h1{font-size:clamp(27px,6vw,38px);letter-spacing:-1.1px;margin:0 0 10px}.welcome p{color:var(--muted);line-height:1.5;margin:0 auto 26px;max-width:420px}
+.suggestions{display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:left}.suggestion{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:16px;padding:14px;font-size:14px;line-height:1.4;text-align:left}.suggestion span{display:block;color:var(--muted);font-size:12px;margin-top:5px}
+.messages{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:18px}.message{display:flex;gap:10px;align-items:flex-start}.message.user{flex-direction:row-reverse}.avatar{flex:0 0 30px;height:30px;border-radius:10px;display:grid;place-items:center;background:var(--panel2);font-size:13px;font-weight:700}.message.user .avatar{background:var(--accent);color:#111318}.bubble{max-width:min(84%,640px);border:1px solid var(--line);background:var(--panel);padding:12px 14px;border-radius:5px 16px 16px 16px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px}.message.user .bubble{background:#29352f;border-color:#3b5145;border-radius:16px 5px 16px 16px}.bubble .copy{display:block;margin-top:10px;border:0;background:transparent;color:var(--muted);padding:4px 0;font-size:12px}
+.status{font-size:12px;color:var(--muted);padding:0 4px}
+footer{padding:10px 12px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--bg)}
+.composer{max-width:720px;margin:0 auto;background:var(--panel);border:1px solid #414754;border-radius:22px;padding:8px;display:flex;align-items:flex-end;gap:8px}
+textarea{flex:1;resize:none;max-height:150px;min-height:42px;border:0;outline:0;background:transparent;color:var(--text);font:inherit;font-size:15px;line-height:1.45;padding:10px 8px}
+.send{border:0;background:var(--accent);color:#111318;font-weight:800;border-radius:15px;width:42px;height:42px;font-size:19px}
+.footnote{text-align:center;color:var(--muted);font-size:11px;margin:9px 0 0}
+.drawer{position:fixed;inset:0;background:#0009;display:none;align-items:flex-end;z-index:4}.drawer.open{display:flex}.sheet{background:var(--panel);border:1px solid var(--line);border-radius:22px 22px 0 0;width:100%;max-height:86dvh;overflow:auto;padding:20px 18px calc(20px + env(safe-area-inset-bottom))}
+.sheet h2{margin:0 0 8px;font-size:21px}.sheet p{color:var(--muted);font-size:13px;line-height:1.45}.field{display:block;margin:14px 0}.field span{display:block;font-size:13px;margin-bottom:6px;color:#d7dbe3}.field input,.field select{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:#111318;color:var(--text);font-size:14px}.actions{display:flex;gap:8px;margin-top:18px}.actions button{flex:1}.primary{background:var(--accent);color:#111318;border:0;border-radius:12px;padding:12px;font-weight:700}.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:12px}
+@media(min-width:650px){footer{padding-left:20px;padding-right:20px}.welcome{margin-top:10vh}.sheet{width:min(600px,100%);margin:0 auto 20px;border-radius:22px}.drawer{align-items:center}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="logo">✦</div>
+  <div class="brand"><strong>Pocket AI</strong><small id="modeLabel">Demo mode · ready to chat</small></div>
+  <button class="header-btn" id="newChat" aria-label="New chat">＋ New</button>
+  <button class="header-btn" id="settingsBtn">⚙</button>
+</header>
+<main id="main">
+  <section class="welcome" id="welcome">
+    <div class="orb">✦</div>
+    <h1>What can I help with?</h1>
+    <p>Your personal AI assistant. Ask a question, brainstorm an idea, or get help with something you're learning.</p>
+    <div class="suggestions">
+      <button class="suggestion" data-prompt="Explain something difficult in simple words.">📚 Explain a topic<span>Make it easy to understand</span></button>
+      <button class="suggestion" data-prompt="Give me 5 creative ideas for a short video.">🎬 Create ideas<span>Videos, stories, projects</span></button>
+      <button class="suggestion" data-prompt="Help me make a simple plan for today.">🗓️ Make a plan<span>Break a goal into steps</span></button>
+      <button class="suggestion" data-prompt="Quiz me on general knowledge, one question at a time.">🧠 Test my knowledge<span>Learn as you go</span></button>
+    </div>
+  </section>
+  <section class="messages" id="messages" aria-live="polite"></section>
+</main>
+<footer>
+  <div class="composer">
+    <textarea id="input" rows="1" placeholder="Message Pocket AI…" aria-label="Message Pocket AI"></textarea>
+    <button class="send" id="send" aria-label="Send message">↑</button>
+  </div>
+  <div class="footnote">AI can make mistakes. Check important information.</div>
+</footer>
+</div>
+<div class="drawer" id="settingsDrawer">
+  <div class="sheet">
+    <h2>AI connection</h2>
+    <p>Demo mode works immediately with sample replies. To use a real model, enter an OpenAI-compatible API endpoint and key from a provider that supports it. Don't share your key with anyone. A key used in this browser is not a secure production setup.</p>
+    <label class="field"><span>Mode</span><select id="mode"><option value="demo">Demo (free, no account)</option><option value="api">Connect an API</option></select></label>
+    <label class="field"><span>API endpoint</span><input id="endpoint" placeholder="https://your-provider.example/v1/chat/completions" autocomplete="off"></label>
+    <label class="field"><span>Model name</span><input id="model" placeholder="Model name from your provider" autocomplete="off"></label>
+    <label class="field"><span>API key (kept for this tab only)</span><input id="apiKey" type="password" placeholder="Paste your API key" autocomplete="off"></label>
+    <div class="actions"><button class="secondary" id="closeSettings">Cancel</button><button class="primary" id="saveSettings">Save settings</button></div>
+    <p>For a public app, connect through a small backend so your API key isn't exposed to users. API usage may cost money even when the app itself is free.</p>
+  </div>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const messagesEl=$('messages'), welcome=$('welcome'), input=$('input');
+let history=[], busy=false;
+let config={mode:'demo',endpoint:'',model:'',apiKey:''};
+function updateMode(){ $('modeLabel').textContent=config.mode==='api'?'Connected mode · check provider limits':'Demo mode · ready to chat'; }
+function addMessage(role,text){
+  welcome.style.display='none';
+  const row=document.createElement('div');row.className='message '+(role==='user'?'user':'assistant');
+  const avatar=document.createElement('div');avatar.className='avatar';avatar.textContent=role==='user'?'You':'✦';
+  const bubble=document.createElement('div');bubble.className='bubble';bubble.textContent=text;
+  if(role!=='user'){const copy=document.createElement('button');copy.className='copy';copy.textContent='Copy answer';copy.onclick=async()=>{try{await navigator.clipboard.writeText(text);copy.textContent='Copied!'}catch{copy.textContent='Select and copy the text'}};bubble.appendChild(copy)}
+  row.append(avatar,bubble);messagesEl.appendChild(row);$('main').scrollTop=$('main').scrollHeight;
+}
+function demoReply(prompt){
+ const p=prompt.toLowerCase();
+ if(p.includes('hello')||p.includes('hey')||p.includes('hi')) return "Hey! 👋 I'm Pocket AI. I'm running in demo mode right now, but I can show you how the app works. Connect a compatible AI API in Settings for real, open-ended answers.";
+ if(p.includes('video')||p.includes('short')||p.includes('youtube')) return "Here’s a simple Short idea:\\n\\n1. Hook (first 1–2 seconds): ask a surprising question.\\n2. Main point: give 2–3 useful facts with quick visuals and subtitles.\\n3. Payoff: answer the hook clearly.\\n4. End: invite viewers to comment with their opinion.\\n\\nThis is a demo response. Connect a real model for tailored ideas.";
+ if(p.includes('plan')||p.includes('today')) return "Try this simple plan:\\n\\n• Pick one important task.\\n• Work on it for 20 minutes.\\n• Take a short break.\\n• Finish one small task you’ve been putting off.\\n• Review what worked at the end of the day.\\n\\nTell me your goal and I can help you make it more specific once a real model is connected.";
+ if(p.includes('quiz')) return "Let’s start! 🌍\\n\\nQuestion 1: What is the largest planet in our Solar System?\\n\\nReply with your answer. (Demo mode uses sample responses.)";
+ if(p.includes('explain')) return "Absolutely. Send me the exact topic you want explained, and I’ll break it into simple steps. For open-ended explanations, connect a real AI model in Settings.";
+ return "Thanks for your message! Pocket AI's chat interface is working, but this is a sample reply because you're in Demo mode. Open ⚙ Settings to connect an AI model using a compatible API endpoint, model name, and API key.";
+}
+async function realReply(){
+ const response=await fetch(config.endpoint,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+config.apiKey},body:JSON.stringify({model:config.model,messages:history,temperature:0.7})});
+ if(!response.ok) throw new Error('Provider returned HTTP '+response.status+'. Check the endpoint, model, API key, and provider access.');
+ const data=await response.json();
+ const content=data.choices?.[0]?.message?.content;
+ if(typeof content!=='string') throw new Error('Unexpected response format. This endpoint may not use the OpenAI-compatible chat-completions format.');
+ return content;
+}
+async function sendMessage(text){
+ text=text.trim();if(!text||busy)return;
+ busy=true;$('send').disabled=true;addMessage('user',text);history.push({role:'user',content:text});input.value='';input.style.height='auto';
+ let pending=document.createElement('div');pending.className='status';pending.textContent='Pocket AI is thinking…';messagesEl.appendChild(pending);
+ try{
+  let answer;
+  if(config.mode==='api'){
+   if(!config.endpoint||!config.model||!config.apiKey) throw new Error('Open Settings and fill in the endpoint, model name, and API key.');
+   answer=await realReply();
+  }else answer=demoReply(text);
+  pending.remove();history.push({role:'assistant',content:answer});addMessage('assistant',answer);
+ }catch(err){pending.remove();addMessage('assistant','I couldn’t get a reply: '+err.message+'\\n\\nIf you are using a real API, confirm that your provider supports browser requests (CORS). For a public app, use a backend proxy instead of putting a secret key in the browser.');}
+ finally{busy=false;$('send').disabled=false;input.focus();}
+}
+$('send').onclick=()=>sendMessage(input.value);
+input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage(input.value)}});
+input.addEventListener('input',()=>{input.style.height='auto';input.style.height=Math.min(input.scrollHeight,150)+'px'});
+document.querySelectorAll('[data-prompt]').forEach(b=>b.onclick=()=>{input.value=b.dataset.prompt;sendMessage(input.value)});
+$('newChat').onclick=()=>{history=[];messagesEl.innerHTML='';welcome.style.display='block';input.value='';input.focus()};
+$('settingsBtn').onclick=()=>{$('settingsDrawer').classList.add('open');$('mode').value=config.mode;$('endpoint').value=config.endpoint;$('model').value=config.model;$('apiKey').value=config.apiKey};
+$('closeSettings').onclick=()=> $('settingsDrawer').classList.remove('open');
+$('settingsDrawer').addEventListener('click',e=>{if(e.target===$('settingsDrawer'))$('settingsDrawer').classList.remove('open')});
+$('saveSettings').onclick=()=>{config={mode:$('mode').value,endpoint:$('endpoint').value.trim(),model:$('model').value.trim(),apiKey:$('apiKey').value};updateMode();$('settingsDrawer').classList.remove('open')};
+updateMode();
+</script>
+</body>
+</html>
